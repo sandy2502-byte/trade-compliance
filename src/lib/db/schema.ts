@@ -29,5 +29,17 @@ export const positions = sqliteTable("positions", {
   compliance_status: text("compliance_status").notNull(),
 });
 
+export const compliance_rules = sqliteTable("compliance_rules", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  rule_id: text("rule_id").notNull(),          // e.g. "CR001"
+  rule_text: text("rule_text").notNull(),       // plain-English rule
+  category: text("category").notNull().default("Custom"),
+  threshold_override: real("threshold_override"), // optional numeric override
+  enabled: integer("enabled", { mode: "boolean" }).notNull().default(true),
+  notes: text("notes"),
+  created_at: text("created_at").notNull(),
+});
+
 export type Fund = typeof funds.$inferSelect;
 export type Position = typeof positions.$inferSelect;
+export type ComplianceRule = typeof compliance_rules.$inferSelect;

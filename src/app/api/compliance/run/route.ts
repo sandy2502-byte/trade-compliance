@@ -16,7 +16,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { funds } from "@/lib/db/schema";
+import { funds, compliance_rules } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { generateAndRunRule, type RuleResult } from "@/lib/compliance-rule-generator";
 
@@ -48,10 +48,29 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Fund not found" }, { status: 404 });
   }
 
+  // Load custom rules from DB and merge with defaults
+  const customRules = db
+    .select()
+    .from(compliance_rules)
+    .all()
+    .filter(r => r.enabled)
+    .map(r => ({
+      id: r.rule_id,
+      text: r.rule_text,
+      category: r.category,
+      threshold_override: r.threshold_override ?? undefined,
+      enabled: true,
+    }));
+
+  const allRules = [
+    ...DEFAULT_RULES.filter(r => r.enabled),
+    ...customRules,
+  ];
+
   // Run all enabled rules in parallel through the skill pipeline
   const results: RuleResult[] = await Promise.all(
-    DEFAULT_RULES.filter(r => r.enabled).map(rule =>
-      generateAndRunRule(rule.id, rule.text, rule.category, fundId)
+    allRules.map(rule =>
+      generateAndRunRule(rule.id, rule.text, rule.category, fundId, rule.threshold_override)
     )
   );
 
