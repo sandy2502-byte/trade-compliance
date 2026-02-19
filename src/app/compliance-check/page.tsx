@@ -48,6 +48,21 @@ const rowBg: Record<string, string> = {
 
 const CATEGORIES = ["Asset Class", "Concentration", "Regulatory", "Liquidity", "Diversification", "Exposure", "Custom"];
 
+const BUILTIN_RULES = [
+  { id: "R001", text: "max 60% of portfolio in Equity",                        category: "Asset Class"     },
+  { id: "R002", text: "no positions with Restricted compliance status",         category: "Regulatory"      },
+  { id: "R003", text: "max 30% of portfolio in any single country",             category: "Concentration"   },
+  { id: "R004", text: "max 30% of portfolio in any single sector",              category: "Concentration"   },
+  { id: "R005", text: "max 40% of portfolio in Bonds",                          category: "Asset Class"     },
+  { id: "R006", text: "min 2% of portfolio in Cash",                            category: "Liquidity"       },
+  { id: "R007", text: "no single position to exceed 15% of NAV",                category: "Concentration"   },
+  { id: "R008", text: "max 20% of portfolio in Review status positions",         category: "Regulatory"      },
+  { id: "R009", text: "max 15% of portfolio in Commodity",                      category: "Asset Class"     },
+  { id: "R010", text: "max 50% of portfolio in Equity plus ETF combined",       category: "Asset Class"     },
+  { id: "R011", text: "minimum 10 positions in portfolio",                      category: "Diversification" },
+  { id: "R012", text: "top 5 holdings max 80% of portfolio",                    category: "Concentration"   },
+];
+
 export default function ComplianceCheckPage() {
   const [tab, setTab] = useState<"check" | "rules">("check");
 
@@ -369,7 +384,39 @@ export default function ComplianceCheckPage() {
             </div>
           </div>
 
-          {/* Custom rules list */}
+          {/* Built-in rules */}
+          <div>
+            <div className="mb-3 flex items-center gap-2">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                Built-in Rules ({BUILTIN_RULES.length})
+              </h2>
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                Always active · read-only
+              </span>
+            </div>
+            <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-xs font-medium uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
+                    <th className="px-4 py-3">ID</th>
+                    <th className="px-4 py-3">Rule</th>
+                    <th className="px-4 py-3">Category</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-100 bg-white dark:divide-zinc-800 dark:bg-zinc-950">
+                  {BUILTIN_RULES.map((rule) => (
+                    <tr key={rule.id}>
+                      <td className="px-4 py-3 font-mono text-xs text-zinc-400">{rule.id}</td>
+                      <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">{rule.text}</td>
+                      <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400">{rule.category}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Custom rules */}
           <div>
             <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
               Custom Rules ({customRules.length})
@@ -439,7 +486,7 @@ export default function ComplianceCheckPage() {
             )}
 
             <p className="mt-4 text-xs text-zinc-400 dark:text-zinc-500">
-              Custom rules are stored in the database and run automatically alongside the 12 default rules on every compliance check.
+              Custom rules are stored in the database and run alongside the 12 built-in rules on every compliance check.
               Disable a rule to skip it without deleting it.
             </p>
           </div>
