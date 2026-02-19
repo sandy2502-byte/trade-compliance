@@ -8,6 +8,7 @@ const navLinks = [
   { href: "/hs-lookup", label: "HS Code Lookup" },
   { href: "/trade-regulations", label: "Trade Regulations" },
   { href: "/portfolio", label: "Portfolio" },
+  { href: "/compliance-check", label: "Compliance Check" },
 ];
 
 export default function Navbar() {
