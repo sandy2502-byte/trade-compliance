@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { href: "/", label: "Dashboard" },
+  { href: "/", label: "Home" },
   { href: "/hs-lookup", label: "HS Code Lookup" },
   { href: "/trade-regulations", label: "Trade Regulations" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/compliance-check", label: "Compliance Check" },
+  { href: "/compliance-dashboard", label: "Dashboard" },
 ];
 
 export default function Navbar() {
